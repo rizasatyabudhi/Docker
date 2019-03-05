@@ -1,0 +1,26 @@
+version: '3'
+services:
+  web:
+    build:
+      # Because we use custom dockerfile naming (Dockerfile.dev), we have to do this
+      # Specify where directory to pull for this image
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Exclude node_modules to be mapped, because our local don't have node_modules
+      - /app/node_modules
+
+      # Map current dir (local env) with /app (container)
+      - .:/app
+
+  # New container just for test
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"]
